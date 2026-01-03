@@ -86,6 +86,8 @@ export interface Portfolio {
     type: 'image' | 'video';
     isHero: boolean;
     order: number;
+    caption?: string;
+    alt?: string;
   }[];
   videoLinks: {
     platform: string;

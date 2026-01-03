@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { ChevronLeft, Calendar, User, Tag, ArrowRight, Play } from 'lucide-react';
+import { ChevronLeft, Calendar, User, Tag, Play } from 'lucide-react';
 import { useSiteStore } from '../store.tsx';
 
 export const PortfolioDetail: React.FC = () => {
@@ -12,45 +12,50 @@ export const PortfolioDetail: React.FC = () => {
   if (!project) return <Navigate to="/portfolio" />;
 
   const related = portfolios
-    .filter(p => p.category === project.category && p.id !== project.id)
+    .filter(p => p.category === project.category && p.id !== project.id && !p.isDeleted && p.status === 'published')
     .slice(0, 3);
+
+  const heroImage = project.mediaGallery.find(m => m.isHero)?.url || project.mediaGallery[0]?.url || 'https://picsum.photos/1920/1080';
 
   return (
     <div className="bg-stone-950 min-h-screen">
       {/* Hero Section */}
-      <div className="relative h-[60vh] md:h-[70vh] flex items-end px-6 pb-20">
+      <div className="relative h-[70vh] flex items-end px-6 pb-24">
         <div className="absolute inset-0 z-0">
           <img 
-            src={project.mediaGallery.find(m => m.isHero)?.url || 'https://picsum.photos/1920/1080'} 
-            className="w-full h-full object-cover" 
+            src={heroImage} 
+            className="w-full h-full object-cover brightness-[0.4]" 
             alt={project.title} 
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-stone-950/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent"></div>
         </div>
         
         <div className="relative z-10 max-w-7xl mx-auto w-full">
-          <Link to="/portfolio" className="inline-flex items-center text-stone-400 hover:text-amber-500 transition-colors mb-8 text-sm font-bold uppercase tracking-widest">
-            <ChevronLeft size={16} className="mr-2" /> Back to list
+          <Link to="/portfolio" className="inline-flex items-center text-emerald-500 hover:text-white transition-all mb-10 text-[10px] font-black uppercase tracking-[0.4em]">
+            <ChevronLeft size={16} className="mr-2" /> Project Archive
           </Link>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-            <div className="max-w-3xl">
-              <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
+            <div className="max-w-4xl">
+              <div className="flex flex-wrap gap-4 mb-6">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] bg-emerald-600 text-white px-4 py-1.5 rounded-sm">{project.category}</span>
                 {project.tags.map(t => (
-                  <span key={t} className="text-[10px] font-black uppercase tracking-[0.2em] bg-amber-500 text-black px-2 py-0.5 rounded">#{t}</span>
+                  <span key={t} className="text-[10px] font-black uppercase tracking-[0.3em] text-stone-500 border border-stone-800 px-4 py-1.5 rounded-sm">#{t}</span>
                 ))}
               </div>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tighter mb-4">{project.title}</h1>
-              <p className="text-stone-300 text-xl font-light italic opacity-80">"{project.oneLiner}"</p>
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-8 uppercase">{project.title}</h1>
+              <p className="text-emerald-500 text-xl md:text-2xl font-black uppercase tracking-tighter opacity-90 italic">
+                {project.oneLiner ? `"${project.oneLiner}"` : ""}
+              </p>
             </div>
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col">
               {project.videoLinks.length > 0 && (
                 <a 
                   href={project.videoLinks[0].url} 
                   target="_blank" 
                   rel="noreferrer"
-                  className="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-amber-500 transition-all flex items-center justify-center"
+                  className="px-12 py-5 bg-emerald-600 text-white font-black uppercase tracking-widest text-xs hover:bg-emerald-500 transition-all flex items-center justify-center group"
                 >
-                  <Play size={18} fill="currentColor" className="mr-2" /> Watch Video
+                  <Play size={18} fill="currentColor" className="mr-3 group-hover:scale-110 transition-transform" /> Play Mission
                 </a>
               )}
             </div>
@@ -59,69 +64,73 @@ export const PortfolioDetail: React.FC = () => {
       </div>
 
       {/* Info Grid */}
-      <section className="py-24 px-6 border-b border-white/5">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-8 space-y-16">
+      <section className="py-32 px-6 border-b border-white/5 bg-black/40">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-24">
+          <div className="lg:col-span-8 space-y-24">
             <div>
-              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <span className="w-8 h-[1px] bg-amber-500 mr-4"></span> Project Overview
+              <h2 className="text-[10px] font-black text-emerald-500 mb-10 tracking-[0.4em] uppercase flex items-center gap-4">
+                <span className="w-12 h-[1px] bg-emerald-900"></span> Mission Overview
               </h2>
-              <div className="text-stone-400 leading-relaxed text-lg space-y-6">
-                <p>{project.overview}</p>
+              <div className="text-stone-400 leading-relaxed text-lg md:text-xl font-medium whitespace-pre-wrap">
+                {project.overview}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              <div>
-                <h3 className="text-lg font-bold text-amber-500 mb-4">Problem</h3>
-                <p className="text-stone-400 text-sm leading-relaxed">{project.problem}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+              <div className="p-10 bg-stone-900/20 border border-emerald-900/10 rounded-sm">
+                <h3 className="text-[10px] font-black text-emerald-500 mb-6 uppercase tracking-[0.3em]">The Problem</h3>
+                <p className="text-stone-300 text-sm leading-relaxed whitespace-pre-wrap">{project.problem || "N/A"}</p>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-amber-500 mb-4">Solution</h3>
-                <p className="text-stone-400 text-sm leading-relaxed">{project.solution}</p>
+              <div className="p-10 bg-stone-900/20 border border-emerald-900/10 rounded-sm">
+                <h3 className="text-[10px] font-black text-emerald-500 mb-6 uppercase tracking-[0.3em]">The Solution</h3>
+                <p className="text-stone-300 text-sm leading-relaxed whitespace-pre-wrap">{project.solution || "N/A"}</p>
               </div>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <span className="w-8 h-[1px] bg-amber-500 mr-4"></span> The Result
+              <h2 className="text-[10px] font-black text-emerald-500 mb-10 tracking-[0.4em] uppercase flex items-center gap-4">
+                <span className="w-12 h-[1px] bg-emerald-900"></span> Final Results
               </h2>
-              <p className="text-stone-400 leading-relaxed text-lg italic bg-stone-900/40 p-8 rounded-2xl border-l-4 border-amber-500">
-                {project.results}
-              </p>
+              <div className="text-stone-200 leading-relaxed text-lg md:text-xl font-black uppercase tracking-tight p-12 bg-emerald-950/20 border-l-4 border-emerald-500 italic">
+                {project.results || "No results documented."}
+              </div>
             </div>
           </div>
 
           <div className="lg:col-span-4">
-            <div className="bg-stone-900/40 rounded-3xl p-8 sticky top-28 border border-white/5">
-              <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] mb-8 border-b border-white/5 pb-4">Project Details</h3>
-              <ul className="space-y-6">
+            <div className="bg-stone-950/80 border border-emerald-900/20 rounded-sm p-10 sticky top-32">
+              <h3 className="text-[10px] font-black text-white uppercase tracking-[0.4em] mb-12 border-b border-white/5 pb-6">Intelligence Details</h3>
+              <ul className="space-y-8">
                 {project.clientName && (
                   <li className="flex justify-between items-start">
-                    <div className="flex items-center text-stone-500 text-xs font-bold uppercase"><User size={14} className="mr-2" /> Client</div>
-                    <div className="text-sm font-bold text-white text-right">{project.clientName}</div>
+                    <div className="flex items-center text-stone-600 text-[9px] font-black uppercase tracking-widest"><User size={14} className="mr-3 text-emerald-900" /> Client</div>
+                    <div className="text-xs font-black text-white text-right uppercase tracking-tighter">{project.clientName}</div>
                   </li>
                 )}
-                <li className="flex justify-between items-start">
-                  <div className="flex items-center text-stone-500 text-xs font-bold uppercase"><Calendar size={14} className="mr-2" /> Date</div>
-                  <div className="text-sm font-bold text-white text-right">{project.date}</div>
-                </li>
-                <li className="flex justify-between items-start">
-                  <div className="flex items-center text-stone-500 text-xs font-bold uppercase"><Tag size={14} className="mr-2" /> Industry</div>
-                  <div className="text-sm font-bold text-white text-right">{project.industry}</div>
-                </li>
+                {project.date && (
+                  <li className="flex justify-between items-start">
+                    <div className="flex items-center text-stone-600 text-[9px] font-black uppercase tracking-widest"><Calendar size={14} className="mr-3 text-emerald-900" /> Operation Date</div>
+                    <div className="text-xs font-black text-white text-right uppercase tracking-tighter">{project.date}</div>
+                  </li>
+                )}
+                {project.industry && (
+                  <li className="flex justify-between items-start">
+                    <div className="flex items-center text-stone-600 text-[9px] font-black uppercase tracking-widest"><Tag size={14} className="mr-3 text-emerald-900" /> Sector</div>
+                    <div className="text-xs font-black text-white text-right uppercase tracking-tighter">{project.industry}</div>
+                  </li>
+                )}
                 <li>
-                  <div className="text-stone-500 text-xs font-bold uppercase mb-4">Scope of Work</div>
+                  <div className="text-[9px] font-black text-stone-600 uppercase tracking-widest mb-6">Mission Scope</div>
                   <div className="flex flex-wrap gap-2">
-                    {project.scope.map(s => (
-                      <span key={s} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold text-stone-300">{s}</span>
-                    ))}
+                    {project.scope.length > 0 ? project.scope.map(s => (
+                      <span key={s} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[8px] font-black text-stone-400 uppercase tracking-widest">{s}</span>
+                    )) : <span className="text-[8px] text-stone-800 uppercase">None specified</span>}
                   </div>
                 </li>
               </ul>
-              <div className="mt-12">
-                <Link to="/contact" className="w-full block py-4 bg-amber-500 text-black font-black text-center rounded-xl hover:bg-amber-400 transition-all uppercase text-sm tracking-widest">
-                  비슷한 영상 문의하기
+              <div className="mt-16 pt-10 border-t border-white/5">
+                <Link to="/contact" className="w-full block py-5 bg-emerald-600 text-white font-black text-center rounded-sm hover:bg-emerald-500 transition-all uppercase text-[10px] tracking-[0.3em]">
+                  Start Similar Mission
                 </Link>
               </div>
             </div>
@@ -130,13 +139,22 @@ export const PortfolioDetail: React.FC = () => {
       </section>
 
       {/* Gallery */}
-      <section className="py-24 px-6">
+      <section className="py-32 px-6 bg-stone-950">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-sm font-black text-amber-500 mb-12 tracking-[0.2em] uppercase text-center">Gallery</h2>
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+          <div className="text-center mb-24">
+            <h2 className="text-[10px] font-black text-emerald-500 mb-6 tracking-[0.6em] uppercase">Visual Assets</h2>
+            <p className="text-4xl font-black text-white uppercase tracking-tighter">Mission Gallery</p>
+          </div>
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
             {project.mediaGallery.map(media => (
-              <div key={media.id} className="overflow-hidden rounded-2xl bg-stone-900 border border-white/5 hover:border-amber-500/20 transition-all">
-                <img src={media.url} alt="Gallery item" className="w-full object-cover" />
+              <div key={media.id} className="group relative overflow-hidden rounded-sm bg-black border border-emerald-900/10">
+                <img src={media.url} alt={media.alt || project.title} className="w-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" />
+                {(media.caption || media.alt) && (
+                  <div className="absolute inset-x-0 bottom-0 p-6 bg-black/80 backdrop-blur-md translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                    <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">{media.caption || 'Operational Asset'}</p>
+                    <p className="text-xs text-stone-400 italic">"{media.alt || ''}"</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -145,16 +163,20 @@ export const PortfolioDetail: React.FC = () => {
 
       {/* Related Projects */}
       {related.length > 0 && (
-        <section className="py-24 px-6 bg-stone-900/20 border-t border-white/5">
+        <section className="py-32 px-6 bg-black border-t border-emerald-900/10">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-black text-white mb-12 tracking-tighter">Related Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex justify-between items-end mb-16">
+               <h2 className="text-4xl font-black text-white uppercase tracking-tighter">Related Missions</h2>
+               <Link to="/portfolio" className="text-[10px] font-black text-emerald-500 uppercase tracking-widest border-b border-emerald-900 pb-2">Archive</Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {related.map(item => (
-                <Link key={item.id} to={`/portfolio/${item.slug}`} className="group">
-                  <div className="aspect-video rounded-2xl overflow-hidden mb-4 bg-stone-900">
-                    <img src={item.mediaGallery.find(m => m.isHero)?.url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <Link key={item.id} to={`/portfolio/${item.slug}`} className="group block">
+                  <div className="aspect-video rounded-sm overflow-hidden mb-6 bg-stone-950 border border-emerald-900/5">
+                    <img src={item.mediaGallery.find(m => m.isHero)?.url || item.mediaGallery[0]?.url} alt={item.title} className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
                   </div>
-                  <h3 className="text-lg font-bold text-white group-hover:text-amber-500 transition-colors">{item.title}</h3>
+                  <div className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.3em] mb-2">{item.category}</div>
+                  <h3 className="text-lg font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight leading-none">{item.title}</h3>
                 </Link>
               ))}
             </div>
