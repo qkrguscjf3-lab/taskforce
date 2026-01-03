@@ -2,7 +2,7 @@
 import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ChevronLeft, Calendar, User, Tag, ArrowRight, Play } from 'lucide-react';
-import { useSiteStore } from '../store';
+import { useSiteStore } from '../store.tsx';
 
 export const PortfolioDetail: React.FC = () => {
   const { slug } = useParams();

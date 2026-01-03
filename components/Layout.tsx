@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Instagram, Youtube, Phone, Mail, Lock } from 'lucide-react';
-import { useSiteStore } from '../store';
+import { useSiteStore } from '../store.tsx';
 
 const Logo = () => (
   <div className="flex flex-col items-center">

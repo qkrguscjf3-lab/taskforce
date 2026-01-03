@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSiteStore } from '../../store';
+import { useSiteStore } from '../../store.tsx';
 import { Lock } from 'lucide-react';
 
 export const Login: React.FC = () => {

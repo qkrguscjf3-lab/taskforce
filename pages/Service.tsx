@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Plus, ArrowRight, ShieldCheck } from 'lucide-react';
-import { useSiteStore } from '../store';
+import { useSiteStore } from '../store.tsx';
 
 export const Service: React.FC = () => {
   const { services } = useSiteStore();

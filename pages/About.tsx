@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Target, Zap, Heart, Camera, Monitor, Settings } from 'lucide-react';
-import { useSiteStore } from '../store';
+import { useSiteStore } from '../store.tsx';
 
 const IconMap: Record<string, any> = {
   Target,

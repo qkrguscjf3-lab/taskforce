@@ -1,16 +1,16 @@
 
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { SiteProvider, useSiteStore } from './store';
-import { Layout } from './components/Layout';
-import { Home } from './pages/Home';
-import { PortfolioList } from './pages/PortfolioList';
-import { PortfolioDetail } from './pages/PortfolioDetail';
-import { Service } from './pages/Service';
-import { About } from './pages/About';
-import { Contact } from './pages/Contact';
-import { Login } from './pages/Admin/Login';
-import { AdminDashboard } from './pages/Admin/Dashboard';
+import { SiteProvider, useSiteStore } from './store.tsx';
+import { Layout } from './components/Layout.tsx';
+import { Home } from './pages/Home.tsx';
+import { PortfolioList } from './pages/PortfolioList.tsx';
+import { PortfolioDetail } from './pages/PortfolioDetail.tsx';
+import { Service } from './pages/Service.tsx';
+import { About } from './pages/About.tsx';
+import { Contact } from './pages/Contact.tsx';
+import { Login } from './pages/Admin/Login.tsx';
+import { AdminDashboard } from './pages/Admin/Dashboard.tsx';
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAdmin } = useSiteStore();

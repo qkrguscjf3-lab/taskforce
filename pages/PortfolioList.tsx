@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, ArrowRight } from 'lucide-react';
-import { useSiteStore } from '../store';
+import { useSiteStore } from '../store.tsx';
 
 export const PortfolioList: React.FC = () => {
   const { portfolios } = useSiteStore();

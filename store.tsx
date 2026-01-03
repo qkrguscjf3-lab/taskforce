@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { HomeContent, Portfolio, ServicePackage, Review, FAQ, Inquiry, AboutContent, SiteSettings } from './types';
-import { INITIAL_HOME_CONTENT, INITIAL_PORTFOLIOS, INITIAL_SERVICES, INITIAL_REVIEWS, INITIAL_FAQS, INITIAL_ABOUT_CONTENT, INITIAL_SITE_SETTINGS } from './constants';
+import { HomeContent, Portfolio, ServicePackage, Review, FAQ, Inquiry, AboutContent, SiteSettings } from './types.ts';
+import { INITIAL_HOME_CONTENT, INITIAL_PORTFOLIOS, INITIAL_SERVICES, INITIAL_REVIEWS, INITIAL_FAQS, INITIAL_ABOUT_CONTENT, INITIAL_SITE_SETTINGS } from './constants.ts';
 
 interface SiteData {
   homeContent: HomeContent;
@@ -25,7 +25,6 @@ interface SiteContextType extends SiteData {
   addInquiry: (inquiry: Omit<Inquiry, 'id' | 'createdAt' | 'status'>) => void;
   updateInquiry: (id: string, status: Inquiry['status']) => void;
   
-  // Advanced Delete/Trash Operations
   toggleDeletePortfolio: (id: string, isDeleted: boolean) => void;
   toggleDeleteService: (id: string, isDeleted: boolean) => void;
   toggleDeleteInquiry: (id: string, isDeleted: boolean) => void;
@@ -43,8 +42,12 @@ const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [data, setData] = useState<SiteData>(() => {
-    const saved = localStorage.getItem('site_data_v4');
-    if (saved) return JSON.parse(saved);
+    try {
+      const saved = localStorage.getItem('site_data_v4');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error("Store parsing failed, resetting to initial state", e);
+    }
     return {
       homeContent: INITIAL_HOME_CONTENT,
       aboutContent: INITIAL_ABOUT_CONTENT,
@@ -88,7 +91,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
   };
 
-  // --- Soft Delete Logic (Move to Trash) ---
   const toggleDeletePortfolio = (id: string, isDeleted: boolean) => {
     setData(prev => ({
       ...prev,
@@ -110,7 +112,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
   };
 
-  // --- Permanent Delete Logic ---
   const permanentDeletePortfolio = (id: string) => {
     setData(prev => ({
       ...prev,

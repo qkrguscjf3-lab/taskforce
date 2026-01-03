@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Send, Check } from 'lucide-react';
-import { useSiteStore } from '../store';
+import { useSiteStore } from '../store.tsx';
 
 export const Contact: React.FC = () => {
   const { addInquiry } = useSiteStore();
@@ -12,13 +12,12 @@ export const Contact: React.FC = () => {
     purpose: '브랜드 홍보',
     type: '유튜브/SNS용',
     budget: '500만원 이하',
-    date: '', // Add date field to form state to comply with Inquiry type
+    date: '', 
     message: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Fix: addInquiry expects a 'date' property which was missing in the interface definition of Omit<Inquiry, "id" | "createdAt" | "status">
     addInquiry({
       name: form.name,
       contact: form.contact,
@@ -129,7 +128,6 @@ export const Contact: React.FC = () => {
                 <option>3000만원 이상</option>
               </select>
             </div>
-            {/* Added missing date input field */}
             <div className="space-y-2">
               <label className="text-xs font-black text-stone-500 uppercase tracking-widest">희망 일정</label>
               <input 

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Play, Award, CheckCircle, Users } from 'lucide-react';
-import { useSiteStore } from '../store';
+import { useSiteStore } from '../store.tsx';
 
 const Hero = () => {
   const { homeContent } = useSiteStore();
