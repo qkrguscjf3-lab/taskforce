@@ -25,6 +25,7 @@ interface SiteContextType extends SiteData {
   addInquiry: (inquiry: Omit<Inquiry, 'id' | 'createdAt' | 'status'>) => void;
   updateInquiry: (id: string, status: Inquiry['status']) => void;
   
+  // Advanced Delete/Trash Operations
   toggleDeletePortfolio: (id: string, isDeleted: boolean) => void;
   toggleDeleteService: (id: string, isDeleted: boolean) => void;
   toggleDeleteInquiry: (id: string, isDeleted: boolean) => void;
@@ -42,16 +43,8 @@ const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [data, setData] = useState<SiteData>(() => {
-    try {
-      const saved = localStorage.getItem('site_data_v5');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // 기본 데이터 구조가 유효한지 간단히 확인
-        if (parsed.homeContent && parsed.siteSettings) return parsed;
-      }
-    } catch (e) {
-      console.error("Critical: Storage parsing failed. Falling back to initial state.", e);
-    }
+    const saved = localStorage.getItem('site_data_v4');
+    if (saved) return JSON.parse(saved);
     return {
       homeContent: INITIAL_HOME_CONTENT,
       aboutContent: INITIAL_ABOUT_CONTENT,
@@ -67,11 +60,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('is_admin') === 'true');
 
   useEffect(() => {
-    try {
-      localStorage.setItem('site_data_v5', JSON.stringify(data));
-    } catch (e) {
-      console.error("Failed to save data to localStorage", e);
-    }
+    localStorage.setItem('site_data_v4', JSON.stringify(data));
   }, [data]);
 
   const updateHome = (content: HomeContent) => setData(prev => ({ ...prev, homeContent: content }));
@@ -99,28 +88,48 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
   };
 
+  // --- Soft Delete Logic (Move to Trash) ---
   const toggleDeletePortfolio = (id: string, isDeleted: boolean) => {
-    setData(prev => ({ ...prev, portfolios: prev.portfolios.map(p => p.id === id ? { ...p, isDeleted } : p) }));
+    setData(prev => ({
+      ...prev,
+      portfolios: prev.portfolios.map(p => p.id === id ? { ...p, isDeleted } : p)
+    }));
   };
 
   const toggleDeleteService = (id: string, isDeleted: boolean) => {
-    setData(prev => ({ ...prev, services: prev.services.map(s => s.id === id ? { ...s, isDeleted } : s) }));
+    setData(prev => ({
+      ...prev,
+      services: prev.services.map(s => s.id === id ? { ...s, isDeleted } : s)
+    }));
   };
 
   const toggleDeleteInquiry = (id: string, isDeleted: boolean) => {
-    setData(prev => ({ ...prev, inquiries: prev.inquiries.map(i => i.id === id ? { ...i, isDeleted } : i) }));
+    setData(prev => ({
+      ...prev,
+      inquiries: prev.inquiries.map(i => i.id === id ? { ...i, isDeleted } : i)
+    }));
   };
 
+  // --- Permanent Delete Logic ---
   const permanentDeletePortfolio = (id: string) => {
-    setData(prev => ({ ...prev, portfolios: prev.portfolios.filter(p => p.id !== id) }));
+    setData(prev => ({
+      ...prev,
+      portfolios: prev.portfolios.filter(p => p.id !== id)
+    }));
   };
 
   const permanentDeleteService = (id: string) => {
-    setData(prev => ({ ...prev, services: prev.services.filter(s => s.id !== id) }));
+    setData(prev => ({
+      ...prev,
+      services: prev.services.filter(s => s.id !== id)
+    }));
   };
 
   const permanentDeleteInquiry = (id: string) => {
-    setData(prev => ({ ...prev, inquiries: prev.inquiries.filter(i => i.id !== id) }));
+    setData(prev => ({
+      ...prev,
+      inquiries: prev.inquiries.filter(i => i.id !== id)
+    }));
   };
 
   const login = (pw: string) => {
