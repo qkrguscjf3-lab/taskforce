@@ -1,11 +1,13 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { HomeContent, Portfolio, ServicePackage, Review, FAQ, Inquiry, AboutContent, SiteSettings } from './types.ts';
-import { INITIAL_HOME_CONTENT, INITIAL_PORTFOLIOS, INITIAL_SERVICES, INITIAL_REVIEWS, INITIAL_FAQS, INITIAL_ABOUT_CONTENT, INITIAL_SITE_SETTINGS } from './constants.ts';
+import { HomeContent, Portfolio, ServicePackage, Review, FAQ, Inquiry, AboutContent, SiteSettings, ServicesContent, ContactContent } from './types.ts';
+import { INITIAL_HOME_CONTENT, INITIAL_PORTFOLIOS, INITIAL_SERVICES, INITIAL_REVIEWS, INITIAL_FAQS, INITIAL_ABOUT_CONTENT, INITIAL_SITE_SETTINGS, INITIAL_SERVICES_CONTENT, INITIAL_CONTACT_CONTENT } from './constants.ts';
 
 interface SiteData {
   homeContent: HomeContent;
   aboutContent: AboutContent;
+  servicesContent: ServicesContent;
+  contactContent: ContactContent;
   siteSettings: SiteSettings;
   portfolios: Portfolio[];
   services: ServicePackage[];
@@ -17,6 +19,8 @@ interface SiteData {
 interface SiteContextType extends SiteData {
   updateHome: (content: HomeContent) => void;
   updateAbout: (content: AboutContent) => void;
+  updateServicesContent: (content: ServicesContent) => void;
+  updateContactContent: (content: ContactContent) => void;
   updateSettings: (settings: SiteSettings) => void;
   updatePortfolios: (list: Portfolio[]) => void;
   updateServices: (list: ServicePackage[]) => void;
@@ -43,7 +47,7 @@ const SiteContext = createContext<SiteContextType | undefined>(undefined);
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [data, setData] = useState<SiteData>(() => {
     try {
-      const saved = localStorage.getItem('site_data_v4');
+      const saved = localStorage.getItem('site_data_v7');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error("Store parsing failed, resetting to initial state", e);
@@ -51,6 +55,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return {
       homeContent: INITIAL_HOME_CONTENT,
       aboutContent: INITIAL_ABOUT_CONTENT,
+      servicesContent: INITIAL_SERVICES_CONTENT,
+      contactContent: INITIAL_CONTACT_CONTENT,
       siteSettings: INITIAL_SITE_SETTINGS,
       portfolios: INITIAL_PORTFOLIOS,
       services: INITIAL_SERVICES,
@@ -63,11 +69,13 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('is_admin') === 'true');
 
   useEffect(() => {
-    localStorage.setItem('site_data_v4', JSON.stringify(data));
+    localStorage.setItem('site_data_v7', JSON.stringify(data));
   }, [data]);
 
   const updateHome = (content: HomeContent) => setData(prev => ({ ...prev, homeContent: content }));
   const updateAbout = (content: AboutContent) => setData(prev => ({ ...prev, aboutContent: content }));
+  const updateServicesContent = (content: ServicesContent) => setData(prev => ({ ...prev, servicesContent: content }));
+  const updateContactContent = (content: ContactContent) => setData(prev => ({ ...prev, contactContent: content }));
   const updateSettings = (settings: SiteSettings) => setData(prev => ({ ...prev, siteSettings: settings }));
   const updatePortfolios = (list: Portfolio[]) => setData(prev => ({ ...prev, portfolios: list }));
   const updateServices = (list: ServicePackage[]) => setData(prev => ({ ...prev, services: list }));
@@ -152,6 +160,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ...data,
       updateHome,
       updateAbout,
+      updateServicesContent,
+      updateContactContent,
       updateSettings,
       updatePortfolios,
       updateServices,

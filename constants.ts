@@ -1,5 +1,5 @@
 
-import { HomeContent, Portfolio, ServicePackage, Review, FAQ, AboutContent, SiteSettings } from './types';
+import { HomeContent, Portfolio, ServicePackage, Review, FAQ, AboutContent, SiteSettings, ServicesContent, ContactContent } from './types';
 
 export const INITIAL_HOME_CONTENT: HomeContent = {
   hero: {
@@ -53,6 +53,21 @@ export const INITIAL_ABOUT_CONTENT: AboutContent = {
       { title: "Editing Lab", list: ["DaVinci Resolve Studio", "Unreal Engine 5", "Dolby Atmos Mixing"] }
     ]
   }
+};
+
+export const INITIAL_SERVICES_CONTENT: ServicesContent = {
+  headline: "Service",
+  subHeadline: "브랜드의 성장을 위한 최적화된 영상 제작 패키지를 제안합니다."
+};
+
+export const INITIAL_CONTACT_CONTENT: ContactContent = {
+  headline: "Get in Touch",
+  subHeadline: "멋진 프로젝트를 함께 시작해보세요.",
+  successTitle: "문의가 접수되었습니다.",
+  successMessage: "보내주신 소중한 문의 내용을 검토 후 24시간 이내에 담당자가 연락드리겠습니다.",
+  purposes: ["브랜드 홍보", "행사 스케치", "인터뷰/다큐", "유튜브 채널 운영", "기타"],
+  types: ["유튜브/SNS용", "홈페이지 메인용", "오프라인 전시용", "전체 패키지"],
+  budgets: ["500만원 이하", "500만원 ~ 1500만원", "1500만원 ~ 3000만원", "3000만원 이상"]
 };
 
 export const INITIAL_SITE_SETTINGS: SiteSettings = {

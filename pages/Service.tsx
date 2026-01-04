@@ -5,7 +5,7 @@ import { Check, Plus, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useSiteStore } from '../store.tsx';
 
 export const Service: React.FC = () => {
-  const { services } = useSiteStore();
+  const { services, servicesContent } = useSiteStore();
   const activeServices = services.filter(s => !s.isDeleted);
 
   return (
@@ -13,9 +13,9 @@ export const Service: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-24 text-center md:text-left">
           <h2 className="text-[10px] font-black text-emerald-500 mb-6 tracking-[0.4em] uppercase">Solutions</h2>
-          <h1 className="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter uppercase leading-none">Service</h1>
+          <h1 className="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter uppercase leading-none">{servicesContent.headline}</h1>
           <p className="text-stone-500 text-lg max-w-2xl font-medium opacity-80 uppercase tracking-tighter">
-            브랜드의 성장을 위한 최적화된 영상 제작 패키지를 제안합니다.
+            {servicesContent.subHeadline}
           </p>
         </div>
 
@@ -73,7 +73,7 @@ export const Service: React.FC = () => {
             <div>
               <h3 className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.4em] mb-10">Additional Options</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {activeServices[0]?.options.map((opt, idx) => (
+                {activeServices[0]?.options?.map((opt, idx) => (
                   <div key={idx} className="flex items-center justify-between p-6 bg-stone-900/10 border border-emerald-900/5 rounded-sm">
                     <div className="flex items-center space-x-4">
                       <Plus size={16} className="text-emerald-800" />
@@ -82,7 +82,7 @@ export const Service: React.FC = () => {
                     <span className="text-xs font-black text-emerald-500">₩{opt.price}</span>
                   </div>
                 ))}
-                {!activeServices[0]?.options.length && <p className="text-[9px] text-stone-700 font-black uppercase">No active options.</p>}
+                {!activeServices[0]?.options?.length && <p className="text-[9px] text-stone-700 font-black uppercase">No active options.</p>}
               </div>
             </div>
           </div>

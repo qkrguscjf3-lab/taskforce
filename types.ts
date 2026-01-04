@@ -49,6 +49,21 @@ export interface AboutContent {
   };
 }
 
+export interface ServicesContent {
+  headline: string;
+  subHeadline: string;
+}
+
+export interface ContactContent {
+  headline: string;
+  subHeadline: string;
+  successTitle: string;
+  successMessage: string;
+  purposes: string[];
+  types: string[];
+  budgets: string[];
+}
+
 export interface SiteSettings {
   contact: {
     phone: string;
